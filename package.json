@@ -7,10 +7,11 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "postinstall": "patch-package"
   },
   "dependencies": {
-    "@react-native-ml-kit/text-recognition": "^2.0.0",
     "@react-native/new-app-screen": "0.87.1",
     "@shopify/react-native-skia": "^2.14.0",
     "fast-text-encoding": "^1.0.6",

@@ -17,12 +17,16 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 
+import type {OcrEngine} from './src/ocr/OcrEngine';
+import type {OcrResult} from './src/ocr/OcrResult';
+
 import {PaddleOcrEngine} from './src/ocr/PaddleOCREngine';
 
-const ocrEngine = new PaddleOcrEngine();
+const ocrEngine: OcrEngine = new PaddleOcrEngine();
 
 function App(): React.JSX.Element {
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [engineName, setEngineName] = useState('');
   const [ocrText, setOcrText] = useState('');
   const [loading, setLoading] = useState(false);
   const [executionTime, setExecutionTime] = useState<number | null>(null);
@@ -58,6 +62,7 @@ function App(): React.JSX.Element {
 
   // Clear OCR result
   const clearResult = () => {
+    setEngineName('');
     setOcrText('');
     setExecutionTime(null);
     setConfidence(null);
@@ -147,7 +152,13 @@ function App(): React.JSX.Element {
     }
   };
 
-  // Analyse image using PaddleOCR
+  // Call the OCR model
+  async function runOCR(uri: string): Promise<OcrResult> {
+    return ocrEngine.recognize(uri);
+  }
+
+  
+  // Analyse image independently of the selected OCR model.
   const analyseImage = async () => {
     if (!imageUri) {
       Alert.alert(
@@ -162,28 +173,31 @@ function App(): React.JSX.Element {
       clearResult();
 
       console.log('-----------------------------');
-      console.log('PaddleOCR analysis started');
+      console.log('Image analysis started');
       console.log('Image URI:', imageUri);
 
-      const result = await ocrEngine.recognize(imageUri);
+      // Call the separate OCR function.
+      const result = await runOCR(imageUri);
 
       console.log('-----------------------------');
-      console.log('PaddleOCR RESULT');
+      console.log('ANALYSIS RESULT');
       console.log('Text:', result.text);
       console.log('Confidence:', result.confidence);
       console.log('Execution time:', result.executionTimeMs);
       console.log('Engine:', result.engine);
       console.log('-----------------------------');
 
+      // Update the UI using the standardized result.
+      setEngineName(result.engine);
       setOcrText(result.text);
       setConfidence(result.confidence);
       setExecutionTime(result.executionTimeMs);
     } catch (error) {
-      console.error('PaddleOCR analysis failed:', error);
+      console.error('Image analysis failed:', error);
 
       Alert.alert(
-        'OCR Error',
-        'PaddleOCR failed to analyse the image.',
+        'Analysis Error',
+        'Failed to analyse the image.',
       );
     } finally {
       setLoading(false);
@@ -296,7 +310,7 @@ function App(): React.JSX.Element {
               </Text>
 
               <Text style={styles.metricValue}>
-                PaddleOCR
+                {engineName}
               </Text>
 
             </View>

@@ -136,3 +136,8 @@ android/app/build/
 android/captures/
 *.apk
 *.aab
+
+# Others
+
+models.txt
+android/app/src/main/assets
