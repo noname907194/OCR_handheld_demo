@@ -1,6 +1,6 @@
 export interface OcrResult {
   text: string;
-  confidence: number;
+  confidence: number|null;
   executionTimeMs: number;
   engine: string;
 }

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import 'fast-text-encoding';
+import { QwenOcrEngine } from './src/ocr/QwenOCREngine';
 
 import {
   Alert,
@@ -22,7 +23,7 @@ import type {OcrResult} from './src/ocr/OcrResult';
 
 import {PaddleOcrEngine} from './src/ocr/PaddleOCREngine';
 
-const ocrEngine: OcrEngine = new PaddleOcrEngine();
+const ocrEngine: OcrEngine = new QwenOcrEngine();
 
 function App(): React.JSX.Element {
   const [imageUri, setImageUri] = useState<string | null>(null);

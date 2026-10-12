@@ -61,6 +61,9 @@ export class PaddleOcrEngine implements OcrEngine {
   }
 
   async initialize() {
+
+    const start = Date.now();
+
     const modelDirectory =
       `${RNFS.DocumentDirectoryPath}/ocr-models`;
 
@@ -112,6 +115,9 @@ export class PaddleOcrEngine implements OcrEngine {
     });
 
     await this.ocr.initialize();
+
+    console.log(`time taken to initialize: ${Date.now() - start} ms`);
+
   }
 
   async recognize(imageUri: string): Promise<OcrResult> {
@@ -147,7 +153,7 @@ export class PaddleOcrEngine implements OcrEngine {
 
       return {
         text: result.text,
-        confidence: 0,
+        confidence: result.confidence,
         executionTimeMs,
         engine: 'PaddleOCR',
       };
